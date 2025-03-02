@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+    "rootDir": ".",
+    "noEmit": false
+  },
+  "include": ["src/components/ui/table/**/*", "src/lib/utils.ts", "src/types/index.ts"],
+  "exclude": ["node_modules", "dist", ".next", "src/stories", "tests"]
+}
