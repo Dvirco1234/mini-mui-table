@@ -4,20 +4,20 @@ export interface FetchUsersParams {
   page?: number;
   limit?: number;
   sort?: string;
-  order?: 'asc' | 'desc';
+  order?: 'asc' | 'desc' | 'none';
   filter?: Record<string, string>;
 }
 
 export async function fetchUsers({
   page = 1,
-  limit = 10,
+  limit = 25,
   sort,
   order = 'asc',
   filter,
 }: FetchUsersParams = {}): Promise<{ users: User[]; total: number }> {
   let url = `https://jsonplaceholder.typicode.com/users?_page=${page}&_limit=${limit}`;
   
-  if (sort) {
+  if (sort && order !== 'none') {
     url += `&_sort=${sort}&_order=${order}`;
   }
   
