@@ -38,8 +38,8 @@ export interface TableProps<T = Record<string, unknown>>
 
   // Sorting props
   sortField?: string;
-  sortOrder?: "asc" | "desc" | "none";
-  onSort?: (field: string, order?: "asc" | "desc") => void;
+  sortOrder?: "asc" | "desc" | "";
+  onSort?: (field: string, order?: "asc" | "desc" | "") => void;
   disableColumnSorting?: boolean;
 
   // Filter props
@@ -88,8 +88,8 @@ function TableComponent<T>(
   const {
     currentPage = 1,
     pageSize = 10,
-    totalItems = 0,
-    pageSizeOptions = [5, 10, 25, 50],
+    totalItems = data.length,
+    pageSizeOptions,
     onPageChange,
     onPageSizeChange,
   } = paginationOptions;
@@ -98,7 +98,7 @@ function TableComponent<T>(
   const filterableColumns = columns.filter((column) => column.filterable);
   const hasFilters = filterableColumns.length > 0;
 
-  const handleSort = (field: string, order?: "asc" | "desc") => {
+  const handleSort = (field: string, order?: "asc" | "desc" | "") => {
     if (onSort) {
       onSort(field, order);
     }
@@ -110,8 +110,15 @@ function TableComponent<T>(
     }
   };
 
+  // Convert columns to the format expected by TableSorters
+  const sortableColumns = columns.map(column => ({
+    key: column.id,
+    header: column.label,
+    sortable: column.sortable !== false
+  }));
+
   return (
-    <div className="table-container w-full h-full flex flex-col">
+    <div className={cn("table-container w-full h-full flex flex-col min-h-[400px]", className)}>
       {/* Show customFilters if it exists. If not show filters if there are filters */}
       {slots.customFilters ??
         (hasFilters && onFilterChange && (
@@ -131,25 +138,33 @@ function TableComponent<T>(
           )}
           <table
             ref={ref}
-            className={cn("w-full caption-bottom text-sm", className)}
+            className="w-full caption-bottom text-sm"
             {...props}
           >
             {slots.customHead ?? (
               <TableHead>
-                <TableRow rowHeight={rowHeight}>
+                <TableRow key="header-row" rowHeight={rowHeight}>
                   {columns.map((column) => (
-                    <TableCell key={column.id} className="font-medium">
+                    <TableCell key={column.key || column.id} className="font-medium">
                       {!disableColumnSorting &&
                       column.sortable !== false &&
                       onSort ? (
-                        <TableSorters
-                          column={column}
-                          sortField={sortField}
-                          sortOrder={sortOrder}
-                          onSort={handleSort}
-                        />
+                        <div 
+                          className="cursor-pointer"
+                          onClick={() => {
+                            if (sortField !== column.id) {
+                              handleSort(column.id, 'asc');
+                            } else if (sortOrder === 'asc') {
+                              handleSort(column.id, 'desc');
+                            } else {
+                              handleSort('', '');
+                            }
+                          }}
+                        >
+                          {column.header || column.label}
+                        </div>
                       ) : (
-                        column.label
+                        column.header || column.label
                       )}
                     </TableCell>
                   ))}
@@ -160,7 +175,7 @@ function TableComponent<T>(
             {slots.customBody ?? (
               <TableBody>
                 {data.length === 0 && !loading ? (
-                  <TableRow rowHeight={rowHeight}>
+                  <TableRow key="no-data-row" rowHeight={rowHeight}>
                     <TableCell
                       colSpan={columns.length}
                       className="h-24 text-center"
@@ -170,13 +185,13 @@ function TableComponent<T>(
                   </TableRow>
                 ) : (
                   data.map((row, rowIndex) => (
-                    <TableRow key={rowIndex} rowHeight={rowHeight}>
+                    <TableRow key={`row-${rowIndex}`} rowHeight={rowHeight}>
                       {columns.map((column) => {
-                        const value = row[column.id as keyof typeof row];
+                        const value = row[column.key as keyof typeof row] || row[column.id as keyof typeof row];
 
                         return (
                           <TableCell
-                            key={`${rowIndex}-${column.id}`}
+                            key={`${rowIndex}-${column.key || column.id}`}
                             style={{
                               width: column.width,
                               minWidth: column.minWidth,
@@ -198,7 +213,7 @@ function TableComponent<T>(
       </div>
 
       {slots.customPagination ??
-        (paginationEnabled && onPageChange && onPageSizeChange && (
+        (paginationEnabled && onPageChange && (
           <TablePagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -207,7 +222,6 @@ function TableComponent<T>(
             onPageChange={onPageChange}
             onPageSizeChange={onPageSizeChange}
             pageSizeOptions={pageSizeOptions}
-            className="mt-4"
           />
         ))}
     </div>
@@ -215,7 +229,7 @@ function TableComponent<T>(
 }
 
 // Create a type for the Table component that preserves the generic parameter
-type TableComponent = <T = Record<string, unknown>>(
+type TableComponent = <T>(
   props: TableProps<T> & { ref?: React.ForwardedRef<HTMLTableElement> }
 ) => React.ReactElement;
 
