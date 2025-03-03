@@ -33,6 +33,21 @@ const TableSorters: React.FC<TableSortersProps> = ({
     }
   };
 
+  const handleSort = () => {
+    if (sortField !== column.id) {
+      // First click - sort ascending
+      onSort(column.id, 'asc');
+    } else if (sortOrder === 'asc') {
+      // Second click - sort descending
+      onSort(column.id, 'desc');
+    } else {
+      // Third click - clear sorting
+      onSort('');
+    }
+  };
+
+  const isActive = sortField === column.id;
+
   return (
     <div className={cn("flex", className)}>
       {columns
