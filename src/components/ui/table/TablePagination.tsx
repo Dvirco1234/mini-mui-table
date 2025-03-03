@@ -34,7 +34,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <select
-            className="h-8 w-16 rounded-md border border-gray-300 bg-white"
+            className="h-8 w-16 rounded-md border border-gray-300 bg-background outline-none focus:border-blue-500 focus:dark:border-white"
             value={pageSize}
             onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
           >
