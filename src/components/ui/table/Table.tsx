@@ -110,15 +110,13 @@ function TableComponent<T>(
     }
   };
 
-  // Convert columns to the format expected by TableSorters
-  const sortableColumns = columns.map(column => ({
-    key: column.id,
-    header: column.label,
-    sortable: column.sortable !== false
-  }));
-
   return (
-    <div className={cn("table-container w-full h-full flex flex-col min-h-[400px]", className)}>
+    <div
+      className={cn(
+        "table-container w-full h-full flex flex-col min-h-[400px]",
+        className
+      )}
+    >
       {/* Show customFilters if it exists. If not show filters if there are filters */}
       {slots.customFilters ??
         (hasFilters && onFilterChange && (
@@ -136,35 +134,23 @@ function TableComponent<T>(
               <IconLoader2 className="animate-spin text-primary" size={32} />
             </div>
           )}
-          <table
-            ref={ref}
-            className="w-full caption-bottom text-sm"
-            {...props}
-          >
+          <table ref={ref} className="w-full caption-bottom text-sm" {...props}>
             {slots.customHead ?? (
               <TableHead>
                 <TableRow key="header-row" rowHeight={rowHeight}>
                   {columns.map((column) => (
-                    <TableCell key={column.key || column.id} className="font-medium">
+                    <TableCell key={column.id} className="font-medium">
                       {!disableColumnSorting &&
                       column.sortable !== false &&
                       onSort ? (
-                        <div 
-                          className="cursor-pointer"
-                          onClick={() => {
-                            if (sortField !== column.id) {
-                              handleSort(column.id, 'asc');
-                            } else if (sortOrder === 'asc') {
-                              handleSort(column.id, 'desc');
-                            } else {
-                              handleSort('', '');
-                            }
-                          }}
-                        >
-                          {column.header || column.label}
-                        </div>
+                        <TableSorters
+                          columns={[column]}
+                          sortColumn={sortField}
+                          sortDirection={sortOrder}
+                          onSort={handleSort}
+                        />
                       ) : (
-                        column.header || column.label
+                        column.label
                       )}
                     </TableCell>
                   ))}
@@ -187,11 +173,11 @@ function TableComponent<T>(
                   data.map((row, rowIndex) => (
                     <TableRow key={`row-${rowIndex}`} rowHeight={rowHeight}>
                       {columns.map((column) => {
-                        const value = row[column.key as keyof typeof row] || row[column.id as keyof typeof row];
+                        const value = row[column.id as keyof typeof row];
 
                         return (
                           <TableCell
-                            key={`${rowIndex}-${column.key || column.id}`}
+                            key={`${rowIndex}-${column.id}`}
                             style={{
                               width: column.width,
                               minWidth: column.minWidth,
