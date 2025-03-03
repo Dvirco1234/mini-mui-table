@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Column } from '@/types';
-import { IconArrowUp, IconArrowDown, IconSelector } from '@tabler/icons-react';
+import { IconArrowUp, IconArrowDown } from '@tabler/icons-react';
 
 export interface TableSortersProps {
   column: Column;
@@ -54,7 +54,7 @@ const TableSorters: React.FC<TableSortersProps> = ({
             <IconArrowDown size={16} className="text-primary" />
           )
         ) : (
-          <IconSelector size={16} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+          <IconArrowUp size={16} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
         )}
       </div>
     </div>

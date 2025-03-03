@@ -9,6 +9,10 @@ export interface TableFiltersProps {
   className?: string;
 }
 
+/**
+ * TableFilters component that renders a set of filters for each filterable column.
+ * Currently only supports text-based filtering.
+ */
 const TableFilters: React.FC<TableFiltersProps> = ({
   columns,
   filters,
@@ -31,7 +35,7 @@ const TableFilters: React.FC<TableFiltersProps> = ({
           <input
             id={`filter-${column.id}`}
             type="text"
-            className="rounded-md border border-gray-300 px-3 py-1 text-sm"
+            className="rounded-md border bg-background outline-none border-gray-300 focus:border-blue-500 focus:dark:border-white px-3 py-1 text-sm"
             value={filters[column.id] || ''}
             onChange={(e) => onFilterChange(column.id, e.target.value)}
             placeholder={`Filter by ${column.label.toLowerCase()}`}

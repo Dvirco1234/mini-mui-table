@@ -10,7 +10,7 @@ export interface FetchUsersParams {
 
 export async function fetchUsers({
   page = 1,
-  limit = 25,
+  limit = 100,
   sort,
   order = 'asc',
   filter,
