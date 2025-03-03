@@ -19,7 +19,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   totalItems,
   onPageChange,
   onPageSizeChange,
-  pageSizeOptions = [5, 10, 25, 50],
+  pageSizeOptions,
   className,
 }) => {
   const startItem = (currentPage - 1) * pageSize + 1;
@@ -31,20 +31,22 @@ const TablePagination: React.FC<TablePaginationProps> = ({
         Showing {startItem}-{endItem} of {totalItems} items
       </div>
       <div className="flex items-center space-x-6">
-        <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rows per page</p>
-          <select
-            className="h-8 w-16 rounded-md border border-gray-300 bg-white"
-            value={pageSize}
-            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-          >
-            {pageSizeOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
+        {pageSizeOptions && pageSizeOptions.length > 0 && onPageSizeChange && (
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium">Rows per page</p>
+            <select
+              className="h-8 w-16 rounded-md border border-gray-300 bg-background outline-none focus:border-blue-500 focus:dark:border-white"
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            >
+              {pageSizeOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="flex items-center space-x-2">
           <button
             className="inline-flex items-center justify-center rounded-md p-1 text-sm font-medium transition-colors hover:bg-gray-100 disabled:opacity-50"

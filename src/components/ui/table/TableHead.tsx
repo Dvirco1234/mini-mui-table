@@ -10,7 +10,7 @@ const TableHead = forwardRef<HTMLTableSectionElement, TableHeadProps>(
     return (
       <thead
         ref={ref}
-        className={cn("[&_tr]:border-b", className)}
+        className={cn("shadow-sm sticky top-0 bg-background", className)}
         {...props}
       />
     );
