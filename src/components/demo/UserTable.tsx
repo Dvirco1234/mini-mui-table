@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Table } from "@/components/ui/table";
+// import { Table } from "@/components/ui/table";
 import { User, Column } from "@/types";
 import { fetchUsers, FetchUsersParams } from "@/lib/api";
+import { Table } from "@dvirco123/mini-mui-table";
 
 const columns: Column[] = [
   { id: "id", label: "ID", sortable: true },
@@ -129,7 +130,7 @@ export function UserTable() {
         totalItems,
         pageSizeOptions: [5, 10, 25, 50],
         onPageChange: handlePageChange,
-        onPageSizeChange: handlePageSizeChange
+        onPageSizeChange: handlePageSizeChange,
       }}
       sortField={sortField}
       sortOrder={sortOrder}
