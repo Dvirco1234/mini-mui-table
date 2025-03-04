@@ -28,6 +28,7 @@ export interface User {
  * By default, columns are sortable and filterable.
  * To prevent - explicitly make it false
  */
+// eslint-disable-next-line
 export interface Column<R = any> {
   id: string;
   label: string;
@@ -42,37 +43,39 @@ export interface Column<R = any> {
 /**
  * Parameters passed to the column render function
  */
+// eslint-disable-next-line
 export interface TableCellParams<R = any> {
   /**
    * The row data
    */
   row: R;
-  
+
   /**
    * The column definition
    */
   column: Column<R>;
-  
+
   /**
    * The row index
    */
   rowIndex: number;
-  
+
   /**
    * The column index
    */
   colIndex: number;
-  
+
   /**
    * The field value from the row
    */
+  // eslint-disable-next-line
   value: any;
-  
+
   /**
    * Whether the cell is being edited
    */
   isEditing?: boolean;
-  
+
   /**
    * Whether the cell has focus
    */
@@ -82,4 +85,5 @@ export interface TableCellParams<R = any> {
 /**
  * Type for a collection of columns with proper row type inference
  */
+// eslint-disable-next-line
 export type Columns<R = any> = Column<R>[];

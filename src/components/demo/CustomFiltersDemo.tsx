@@ -125,6 +125,7 @@ export function CustomFiltersDemo() {
       label: "Thumbnail",
       render: (photo: Photo) => (
         <div className="flex justify-center">
+          {/* eslint-disable-next-line */}
           <img
             src={photo.thumbnailUrl}
             alt={photo.title}

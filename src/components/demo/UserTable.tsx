@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// import { Table } from "@/components/ui/table";
 import { User, Column } from "@/types";
 import { fetchUsers, FetchUsersParams } from "@/lib/api";
 import { Table } from "@dvirco123/mini-mui-table";
@@ -45,7 +44,7 @@ export function UserTable() {
 
   // Sorting state
   const [sortField, setSortField] = useState<string | undefined>(undefined);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "none">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "">("asc");
 
   // Filtering state
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -87,11 +86,11 @@ export function UserTable() {
   };
 
   // Handle sorting
-  const handleSort = (field: string, order?: "asc" | "desc") => {
+  const handleSort = (field: string, order?: "asc" | "desc" | "") => {
     if (!field) {
       // Clear sorting
       setSortField(undefined);
-      setSortOrder("none");
+      setSortOrder("");
     } else if (order) {
       // Set specific order
       setSortField(field);
@@ -99,7 +98,7 @@ export function UserTable() {
     } else {
       // Toggle order
       if (sortField === field) {
-        setSortOrder(sortOrder === "asc" ? "desc" : "none");
+        setSortOrder(sortOrder === "asc" ? "desc" : "");
         if (sortOrder === "desc") {
           setSortField(undefined);
         }
