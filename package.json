@@ -16,6 +16,7 @@
     "build:lib": "tsc -p tsconfig.lib.json"
   },
   "dependencies": {
+    "@dvirco123/mini-mui-table": "^1.0.1",
     "@tabler/icons-react": "^3.30.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
