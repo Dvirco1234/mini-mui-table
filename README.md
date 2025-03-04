@@ -59,7 +59,6 @@ function PaginatedTable() {
   }));
 
   const totalItems = data.length;
-
   // Get current page data
   const currentData = data.slice(
     (currentPage - 1) * pageSize,
@@ -229,9 +228,10 @@ Enables sorting on specific columns.
 | onSort        | function              | Callback when sort changes  |
 | className     | string                | Additional CSS classes      |
 
-### TableFilters
 
-Allows filtering data based on specific columns.
+### TableSorters
+
+Enables sorting on specific columns.
 
 | Prop           | Type     | Description                  |
 | -------------- | -------- | ---------------------------- |
