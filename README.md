@@ -10,227 +10,157 @@ A mini version of Material-UI's React Table component with server-side paginatio
 - Data filtering
 - Responsive design with Tailwind CSS
 - Fully typed with TypeScript
-- Storybook documentation
 - Comprehensive test coverage
+- Generic type support for strongly-typed tables
 
 ## Installation
 
 ```bash
-npm install mini-mui-table
+npm install @dvirco123/mini-mui-table
 ```
 
 ## Usage
 
 ### Basic Table
 
-```jsx
-import { 
-  Table, 
-  TableHead, 
-  TableBody, 
-  TableRow, 
-  TableCell 
-} from 'mini-mui-table';
+```tsx
+import { Table } from "@dvirco123/mini-mui-table";
 
 function SimpleTable() {
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Email</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        <TableRow>
-          <TableCell>John Doe</TableCell>
-          <TableCell>john@example.com</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>Jane Smith</TableCell>
-          <TableCell>jane@example.com</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  );
+  const columns = [
+    { id: "name", label: "Name" },
+    { id: "email", label: "Email" },
+  ];
+
+  const data = [
+    { id: 1, name: "John Doe", email: "john@example.com" },
+    { id: 2, name: "Jane Smith", email: "jane@example.com" },
+  ];
+
+  return <Table<(typeof data)[0]> columns={columns} data={data} />;
 }
 ```
 
 ### Table with Pagination
 
-```jsx
-import { useState } from 'react';
-import { 
-  Table, 
-  TableHead, 
-  TableBody, 
-  TableRow, 
-  TableCell,
-  TablePagination 
-} from 'mini-mui-table';
+```tsx
+import { useState } from "react";
+import { Table, PaginationOptions } from "@dvirco123/mini-mui-table";
 
 function PaginatedTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  
+
   // Example data
   const data = [...Array(50)].map((_, i) => ({
     id: i + 1,
     name: `Person ${i + 1}`,
-    email: `person${i + 1}@example.com`
+    email: `person${i + 1}@example.com`,
   }));
-  
+
   const totalItems = data.length;
-  const totalPages = Math.ceil(totalItems / pageSize);
-  
   // Get current page data
   const currentData = data.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-  
+
+  const columns = [
+    { id: "id", label: "ID" },
+    { id: "name", label: "Name" },
+    { id: "email", label: "Email" },
+  ];
+
+  const paginationOptions: PaginationOptions = {
+    currentPage,
+    pageSize,
+    totalItems,
+    pageSizeOptions: [5, 10, 25, 50],
+    onPageChange: setCurrentPage,
+    onPageSizeChange: setPageSize,
+  };
+
   return (
-    <>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {currentData.map(item => (
-            <TableRow key={item.id}>
-              <TableCell>{item.id}</TableCell>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{item.email}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      
-      <TablePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        pageSize={pageSize}
-        totalItems={totalItems}
-        onPageChange={setCurrentPage}
-        onPageSizeChange={setPageSize}
-        pageSizeOptions={[5, 10, 25, 50]}
-      />
-    </>
+    <Table
+      columns={columns}
+      data={currentData}
+      pagination={paginationOptions}
+    />
   );
 }
 ```
 
 ### Table with Filters and Sorting
 
-```jsx
-import { useState, useEffect } from 'react';
-import { 
-  Table, 
-  TableHead, 
-  TableBody, 
-  TableRow, 
-  TableCell,
-  TableFilters,
-  TableSorters 
-} from 'mini-mui-table';
+```tsx
+import { useState, useEffect } from "react";
+import { Table } from "@dvirco123/mini-mui-table";
 
 function FilterableSortableTable() {
   const [data, setData] = useState([]);
-  const [sortField, setSortField] = useState('id');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortField, setSortField] = useState("id");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "">("asc");
   const [filters, setFilters] = useState({});
-  
+
   const columns = [
-    { id: 'id', label: 'ID', sortable: true },
-    { id: 'name', label: 'Name', sortable: true, filterable: true },
-    { id: 'email', label: 'Email', sortable: true, filterable: true }
+    { id: "id", label: "ID", sortable: true },
+    { id: "name", label: "Name", sortable: true, filterable: true },
+    { id: "email", label: "Email", sortable: true, filterable: true },
   ];
-  
+
   // Example data
   const allData = [...Array(50)].map((_, i) => ({
     id: i + 1,
     name: `Person ${i + 1}`,
-    email: `person${i + 1}@example.com`
+    email: `person${i + 1}@example.com`,
   }));
-  
+
   useEffect(() => {
     // Filter data
     let filteredData = [...allData];
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value) {
-        filteredData = filteredData.filter(item => 
+        filteredData = filteredData.filter((item) =>
           String(item[key]).toLowerCase().includes(String(value).toLowerCase())
         );
       }
     });
-    
+
     // Sort data
-    filteredData.sort((a, b) => {
-      if (a[sortField] < b[sortField]) return sortOrder === 'asc' ? -1 : 1;
-      if (a[sortField] > b[sortField]) return sortOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
-    
+    if (sortField && sortOrder) {
+      filteredData.sort((a, b) => {
+        if (a[sortField] < b[sortField]) return sortOrder === "asc" ? -1 : 1;
+        if (a[sortField] > b[sortField]) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
     setData(filteredData);
   }, [sortField, sortOrder, filters]);
-  
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
-    }
+
+  const handleSort = (field: string, order: "asc" | "desc" | "") => {
+    setSortField(field);
+    setSortOrder(order);
   };
-  
-  const handleFilterChange = (field, value) => {
-    setFilters(prev => ({
+
+  const handleFilterChange = (field: string, value: string) => {
+    setFilters((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
-  
+
   return (
-    <>
-      <TableFilters
-        columns={columns}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-      />
-      
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columns.map(column => (
-              <TableCell key={column.id}>
-                <TableSorters
-                  column={column}
-                  sortField={sortField}
-                  sortOrder={sortOrder}
-                  onSort={handleSort}
-                />
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map(item => (
-            <TableRow key={item.id}>
-              {columns.map(column => (
-                <TableCell key={`${item.id}-${column.id}`}>
-                  {item[column.id]}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </>
+    <Table
+      columns={columns}
+      data={data}
+      sortField={sortField}
+      sortOrder={sortOrder}
+      onSort={handleSort}
+      filters={filters}
+      onFilterChange={handleFilterChange}
+    />
   );
 }
 ```
@@ -239,86 +169,76 @@ function FilterableSortableTable() {
 
 ### Table
 
-The main wrapper component for the table.
+The main component that renders a complete table with optional pagination, sorting, and filtering.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| children | ReactNode | Table content |
-| className | string | Additional CSS classes |
+| Prop                 | Type                      | Description                                       |
+| -------------------- | ------------------------- | ------------------------------------------------- |
+| data                 | T[]                       | Array of data items to display                    |
+| columns              | Columns<T>                | Column definitions                                |
+| slots                | TableSlots                | Optional custom components for parts of the table |
+| loading              | boolean                   | Whether the table is in a loading state           |
+| pagination           | null \| PaginationOptions | Pagination configuration object                   |
+| sortField            | string                    | Current sort field                                |
+| sortOrder            | 'asc' \| 'desc' \| ''     | Current sort order                                |
+| onSort               | function                  | Callback when sort changes                        |
+| disableColumnSorting | boolean                   | Whether to disable sorting on all columns         |
+| filters              | Record<string, string>    | Current filter values                             |
+| onFilterChange       | function                  | Callback when filter changes                      |
+| bordered             | boolean                   | Whether to show borders                           |
+| className            | string                    | Additional CSS classes                            |
+| rowHeight            | number \| string          | Height for table rows                             |
 
-### TableHead
+### PaginationOptions
 
-Represents the header section of the table.
+Configuration for table pagination.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| children | ReactNode | TableRow elements |
-| className | string | Additional CSS classes |
-
-### TableBody
-
-Contains the rows of the table.
-
-| Prop | Type | Description |
-|------|------|-------------|
-| children | ReactNode | TableRow elements |
-| className | string | Additional CSS classes |
-
-### TableRow
-
-Represents a single row in the table.
-
-| Prop | Type | Description |
-|------|------|-------------|
-| children | ReactNode | TableCell elements |
-| className | string | Additional CSS classes |
-
-### TableCell
-
-Represents a single cell in the table.
-
-| Prop | Type | Description |
-|------|------|-------------|
-| children | ReactNode | Cell content |
-| className | string | Additional CSS classes |
+| Prop             | Type     | Description                     |
+| ---------------- | -------- | ------------------------------- |
+| currentPage      | number   | Current page number             |
+| pageSize         | number   | Number of items per page        |
+| totalItems       | number   | Total number of items           |
+| pageSizeOptions  | number[] | Available page size options     |
+| onPageChange     | function | Callback when page changes      |
+| onPageSizeChange | function | Callback when page size changes |
 
 ### TablePagination
 
-Handles pagination functionality.
+Standalone pagination component.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| currentPage | number | Current page number |
-| totalPages | number | Total number of pages |
-| pageSize | number | Number of items per page |
-| totalItems | number | Total number of items |
-| onPageChange | function | Callback when page changes |
+| Prop             | Type     | Description                     |
+| ---------------- | -------- | ------------------------------- |
+| currentPage      | number   | Current page number             |
+| totalPages       | number   | Total number of pages           |
+| pageSize         | number   | Number of items per page        |
+| totalItems       | number   | Total number of items           |
+| onPageChange     | function | Callback when page changes      |
 | onPageSizeChange | function | Callback when page size changes |
-| pageSizeOptions | number[] | Available page size options |
-| className | string | Additional CSS classes |
-
-### TableFilters
-
-Allows filtering data based on specific columns.
-
-| Prop | Type | Description |
-|------|------|-------------|
-| columns | Column[] | Column definitions |
-| filters | object | Current filter values |
-| onFilterChange | function | Callback when filter changes |
-| className | string | Additional CSS classes |
+| pageSizeOptions  | number[] | Available page size options     |
+| className        | string   | Additional CSS classes          |
 
 ### TableSorters
 
 Enables sorting on specific columns.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| column | Column | Column definition |
-| sortField | string | Current sort field |
-| sortOrder | 'asc' \| 'desc' | Current sort order |
-| onSort | function | Callback when sort changes |
-| className | string | Additional CSS classes |
+| Prop          | Type                  | Description                 |
+| ------------- | --------------------- | --------------------------- |
+| columns       | Column[]              | Array of column definitions |
+| sortColumn    | string                | Current sort column         |
+| sortDirection | 'asc' \| 'desc' \| '' | Current sort direction      |
+| onSort        | function              | Callback when sort changes  |
+| className     | string                | Additional CSS classes      |
+
+
+### TableSorters
+
+Enables sorting on specific columns.
+
+| Prop           | Type     | Description                  |
+| -------------- | -------- | ---------------------------- |
+| columns        | Column[] | Column definitions           |
+| filters        | object   | Current filter values        |
+| onFilterChange | function | Callback when filter changes |
+| className      | string   | Additional CSS classes       |
 
 ## Development
 
@@ -336,13 +256,6 @@ npm install
 npm run dev
 ```
 
-### Storybook
-
-```bash
-# Run Storybook
-npm run storybook
-```
-
 ### Testing
 
 ```bash
@@ -351,13 +264,6 @@ npm test
 
 # Run tests in watch mode
 npm run test:watch
-```
-
-### Building for NPM
-
-```bash
-# Build the library
-npm run build:lib
 ```
 
 ## License

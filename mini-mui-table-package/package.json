@@ -1,0 +1,50 @@
+{
+  "name": "@dvirco123/mini-mui-table",
+  "version": "1.0.1",
+  "description": "A reusable Material UI-inspired table component with sorting, filtering, and pagination",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "homepage": "https://github.com/dvirco123/mini-mui-table",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvirco123/mini-mui-table.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "table",
+    "material-ui",
+    "mui",
+    "typescript",
+    "sorting",
+    "filtering",
+    "pagination",
+    "tailwindcss"
+  ],
+  "author": "Dvir Cohen",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "dependencies": {
+    "@tabler/icons-react": "^3.30.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsup": "^8.4.0",
+    "typescript": "^5"
+  }
+}

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import { Columns } from "@/types";
+import { cn } from "../lib/utils";
+import { Columns } from "../types";
 import { TableHead } from "./TableHead";
 import { TableBody } from "./TableBody";
 import { TableRow } from "./TableRow";
@@ -81,6 +81,8 @@ function TableComponent<T>(
   }: TableProps<T>,
   ref: React.ForwardedRef<HTMLTableElement>
 ) {
+  console.log("i am from the package");
+
   // Extract pagination options
   const paginationEnabled = pagination !== null;
   const paginationOptions: PaginationOptions = pagination || {};

@@ -1,6 +1,6 @@
 import React from "react";
-import { cn } from "@/lib/utils";
-import { Column } from "@/types";
+import { cn } from "../lib/utils";
+import { Column } from "../types";
 import { IconArrowUp, IconArrowDown } from "@tabler/icons-react";
 
 export interface TableSortersProps {
