@@ -1,4 +1,3 @@
-import { UserTable } from "@/components/demo/UserTable";
 import { IconBrandGithub, IconBrandNpm } from "@tabler/icons-react";
 import Link from "next/link";
 
